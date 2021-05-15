@@ -5,8 +5,8 @@ target/
 !**/src/test/**/target/
 
 
-.properties
-.mvn
+*.properties
+*.mvn
 
 ### STS ###
 .apt_generated
