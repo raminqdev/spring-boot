@@ -10,22 +10,25 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
-@SpringBootApplication
-public class JdbcAndJpaApplication implements CommandLineRunner {
+
+//@SpringBootApplication
+public class JdbcApplication implements CommandLineRunner {
 
 
     public static void main(String[] args) {
-        SpringApplication.run(JdbcAndJpaApplication.class, args);
+        SpringApplication.run(JdbcApplication.class, args);
     }
 
     private final PersonJdbcDao personJdbcDao;
     private final PersonPureJdbcDao pureJdbcPersonDao;
-    private Logger logger = LoggerFactory.getLogger(JdbcAndJpaApplication.class);
+    private Logger logger = LoggerFactory.getLogger(JdbcApplication.class);
 
     @Autowired
-    public JdbcAndJpaApplication(PersonJdbcDao personJdbcDao, PersonPureJdbcDao pureJdbcPersonDao) {
+    public JdbcApplication(PersonJdbcDao personJdbcDao, PersonPureJdbcDao pureJdbcPersonDao) {
         this.personJdbcDao = personJdbcDao;
         this.pureJdbcPersonDao = pureJdbcPersonDao;
     }
@@ -33,8 +36,6 @@ public class JdbcAndJpaApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         logger.info("All persons ->{}", personJdbcDao.findAll());
-
-        logger.info("All persons Pure JDBC->{}", pureJdbcPersonDao.findAll());
 
         logger.info("Person find by id ->{}", personJdbcDao.findById(1001));
         logger.info("Person find by name and location ->{}", personJdbcDao.findByNameAndLocation("ramin", "tehran"));
@@ -47,5 +48,15 @@ public class JdbcAndJpaApplication implements CommandLineRunner {
         newPerson.setLocation("Belgium");
         newPerson.setBirthDate(new Date());
         logger.info("Number of rows inserted ->{}", personJdbcDao.insert(newPerson));
+
+        Person toUpdatePerson = newPerson;
+        toUpdatePerson.setName("Ali ALex");
+        toUpdatePerson.setLocation("Cologne");
+        toUpdatePerson.setBirthDate(new GregorianCalendar(1990, Calendar.DECEMBER, 15).getTime());
+        logger.info("Number of rows updated ->{}", personJdbcDao.update(newPerson));
+
+        logger.info("All persons Pure JDBC->{}", pureJdbcPersonDao.findAll());
+
+        logger.info("All persons Row Mapper->{}", personJdbcDao.findAllWithRowMapper());
     }
 }

@@ -4,11 +4,17 @@ import com.raminq.JdbcAndJpa.entity.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
+/*
+   Here we use JDBC Template
+ */
 @Repository
 public class PersonJdbcDao {
 
@@ -21,8 +27,9 @@ public class PersonJdbcDao {
     }
 
     public List<Person> findAll() {
+        BeanPropertyRowMapper<Person> rowMapper = BeanPropertyRowMapper.newInstance(Person.class);
         return jdbcTemplate.query("SELECT * FROM Person",
-                BeanPropertyRowMapper.newInstance(Person.class));
+                rowMapper);
     }
 
     public Person findById(int id) {
@@ -45,6 +52,36 @@ public class PersonJdbcDao {
                 person.getName(),
                 person.getLocation(),
                 new Timestamp(person.getBirthDate().getTime()));
+    }
+
+    public int update(Person person) {
+        return jdbcTemplate.update("UPDATE Person SET name=?, location=?, birth_date=? WHERE id=?",
+                person.getName(),
+                person.getLocation(),
+                new Timestamp(person.getBirthDate().getTime()),
+                person.getId());
+    }
+
+    //----- create out own RowMapper
+    class PersonRowMapper implements RowMapper<Person> {
+        @Override
+        public Person mapRow(ResultSet resultSet, int i) throws SQLException {
+
+            Person person = new Person();
+
+            person.setId(resultSet.getInt("id"));
+            person.setName(resultSet.getString("name"));
+            person.setLocation(resultSet.getString("location"));
+            person.setBirthDate(resultSet.getTimestamp("birth_date"));
+
+            return person;
+        }
+    }
+
+    public List<Person> findAllWithRowMapper() {
+        BeanPropertyRowMapper<Person> rowMapper = BeanPropertyRowMapper.newInstance(Person.class);
+        return jdbcTemplate.query("SELECT * FROM Person",
+                new PersonRowMapper());
     }
 
 }
