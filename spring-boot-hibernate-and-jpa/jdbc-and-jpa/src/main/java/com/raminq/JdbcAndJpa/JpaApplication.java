@@ -1,8 +1,6 @@
 package com.raminq.JdbcAndJpa;
 
 import com.raminq.JdbcAndJpa.entity.Person;
-import com.raminq.JdbcAndJpa.jdbc.PersonJdbcDao;
-import com.raminq.JdbcAndJpa.jdbc.PersonPureJdbcDao;
 import com.raminq.JdbcAndJpa.jpa.PersonJpaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

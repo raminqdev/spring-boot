@@ -24,9 +24,9 @@ public class PersonPureJdbcDao {
         try (
                 Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
                 Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery("SELECT * FROM Person");
         ) {
 
-            ResultSet rs = stmt.executeQuery("SELECT * FROM Person");
             while (rs.next()) {
                 Person person = new Person();
 
@@ -38,7 +38,6 @@ public class PersonPureJdbcDao {
                 personList.add(person);
             }
 
-            rs.close();
             return personList;
 
         } catch (SQLException e) {
