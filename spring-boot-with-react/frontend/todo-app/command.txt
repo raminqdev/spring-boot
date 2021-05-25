@@ -1,0 +1,11 @@
+npm install react-router-dom --save
+----------------------------------------------------------------------------------
+bootstrap 4 unpkg --> https://unpkg.com/browse/bootstrap@4.1.0/dist/
+
+https://unpkg.com/browse/bootstrap@4.1.0/dist/css/bootstrap.min.css
+----------------------------------------------------------------------------------
+npm install axios
+npm install formik --save
+npm install moment
+----------------------------------------------------------------------------------
+

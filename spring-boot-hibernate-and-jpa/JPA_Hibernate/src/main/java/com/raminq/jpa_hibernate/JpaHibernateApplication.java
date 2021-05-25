@@ -43,6 +43,7 @@ public class JpaHibernateApplication implements CommandLineRunner {
     }
 
     @Override
+    @Transactional
     public void run(String... args) throws Exception {
 //        employeeRepository.insert(new FullTimeEmployee("Jack", new BigDecimal("10000")));
 //
@@ -51,6 +52,11 @@ public class JpaHibernateApplication implements CommandLineRunner {
 //       // log.info("list ---> {}", employeeRepository.retrieveAllEmployees());
 //        log.info("list ---> {}", employeeRepository.retrieveAllPartTimeEmployees());
 //        log.info("list ---> {}", employeeRepository.retrieveAllFullTimeEmployees());
+
+//        Student byId = studentRepository.findById(2000L);
+//
+//        byId.setName("updated");
+//        studentRepository.save(byId);
 
     }
 

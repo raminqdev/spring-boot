@@ -2,18 +2,25 @@ package com.raminq.jpa_hibernate.repository;
 
 import com.raminq.jpa_hibernate.JpaHibernateApplication;
 import com.raminq.jpa_hibernate.entity.Course;
-import com.raminq.jpa_hibernate.entity.Review;
-import org.junit.jupiter.api.Assertions;
+
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 
 @RunWith(SpringRunner.class)
@@ -21,54 +28,63 @@ import javax.persistence.EntityManager;
 class CourserSpringDataRepositoryTest {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-    private CourseRepository courseRepository;
+    private CourseSpringDataRepository courseSpringDataRepository;
     private EntityManager em;
 
     @Autowired
-    public CourserSpringDataRepositoryTest(CourseRepository courseRepository, EntityManager em) {
-        this.courseRepository = courseRepository;
+    public CourserSpringDataRepositoryTest(CourseSpringDataRepository courseSpringDataRepository, EntityManager em) {
+        this.courseSpringDataRepository = courseSpringDataRepository;
         this.em = em;
     }
 
-
     @Test
-    void findById_basic() {
-        Assertions.assertEquals("JPA Course", courseRepository.findById(1000L).getName());
+    public void findById_coursePresent() {
+        Optional<Course> optionalCourse = courseSpringDataRepository.findById(1000L);
+        Assert.assertTrue(optionalCourse.isPresent());
     }
 
     @Test
-    @DirtiesContext
-    void deleteById_basic() {
-        courseRepository.deleteById(1002L);
-        Assertions.assertNull(courseRepository.findById(1002L));
-    }
-
-
-    @Test
-    @DirtiesContext
-    void save_basic() {
-        Course course = courseRepository.findById(1000L);
-        Assertions.assertEquals("JPA Course", course.getName());
-
-        course.setName("JPA Course - updated");
-
-        Course updatedCourse = courseRepository.save(course);
-        Assertions.assertEquals("JPA Course - updated", updatedCourse.getName());
+    public void findById_course_Not_Present() {
+        Optional<Course> optionalCourse = courseSpringDataRepository.findById(10099L);
+        Assert.assertFalse(optionalCourse.isPresent());
     }
 
     @Test
-    @DirtiesContext
-    void playWithEntityManager() {
-        courseRepository.playWithEntityManager();
-    }
+    public void playAround() {
+        Course newCourse = new Course("Microservices");
 
+        courseSpringDataRepository.save(newCourse);
+
+        newCourse.setName("Microservices- updated");
+
+        courseSpringDataRepository.save(newCourse);
+    }
 
     @Test
-    @DirtiesContext
-    void fetchType_test() {
-        log.info("em.find() --> {}",em.find(Review.class, 5000L).getCourse());
-        log.info("courseRepository.findById --> {}", courseRepository.findById(1001L).getReviews());
+    public void sort() {
+        //sort by name desc
+        Sort sort = Sort.by(Sort.Direction.DESC, "name", "id");
+        log.info("{}", courseSpringDataRepository.findAll(sort));
     }
 
+    @Test
+    public void paging() {
+        Sort sort = Sort.by(Sort.Direction.DESC, "name", "id");
+
+        PageRequest pageRequest = PageRequest.of(0, 3, sort);
+        Page<Course> firstPage = courseSpringDataRepository.findAll(pageRequest);
+
+        log.info("firstPage.getContent --------> {}", firstPage.getContent());
+
+        Pageable secondPageable = firstPage.nextPageable();
+        Page<Course> secondPage = courseSpringDataRepository.findAll(secondPageable);
+        log.info("secondPage.getContent --------> {}", secondPage.getContent());
+    }
+
+    @Test
+    public void findCoursesLike() {
+        log.info("findByName---> {}", courseSpringDataRepository.findCoursesLike("Dummy"));
+        log.info("findCoursesLikenNativeQuery---> {}", courseSpringDataRepository.findCoursesLikenNativeQuery("Dummy"));
+    }
 
 }

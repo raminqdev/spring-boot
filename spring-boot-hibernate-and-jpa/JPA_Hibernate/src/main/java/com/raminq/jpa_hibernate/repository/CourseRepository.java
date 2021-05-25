@@ -2,6 +2,7 @@ package com.raminq.jpa_hibernate.repository;
 
 import com.raminq.jpa_hibernate.entity.Course;
 import com.raminq.jpa_hibernate.entity.Review;
+import com.raminq.jpa_hibernate.entity.ReviewRating;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,8 +145,8 @@ public class CourseRepository {
         Course course = findById(1000L);
         log.info("course.getReviews() -> {}", course.getReviews());
 
-        Review review1 = new Review("5", "Great hands-on stuff");
-        Review review2 = new Review("5", "Hatsoff");
+        Review review1 = new Review(ReviewRating.FIVE, "Great hands-on stuff");
+        Review review2 = new Review(ReviewRating.FIVE, "Hatsoff");
 
         course.addReview(review1);
         review1.setCourse(course); //review owns relationship
