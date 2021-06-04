@@ -5,7 +5,6 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 @Setter
 @Getter
@@ -17,9 +16,11 @@ public class Permission {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private Long id;
+
+    @Column(unique = true)
     private String name;
 
     @ManyToMany(mappedBy = "permissions")
-    private Set<Authority> authorities = new HashSet<>();
+    private Set<Role> roles = new HashSet<>();
 }

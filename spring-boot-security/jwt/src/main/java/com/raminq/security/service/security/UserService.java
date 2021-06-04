@@ -8,11 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ValidationException;
-import java.util.HashSet;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService  {
 
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
@@ -25,9 +24,9 @@ public class UserService {
 //        if (!request.getPassword().equals(request.getRePassword())) {
 //            throw new ValidationException("Passwords don't match!");
 //        }
-        if (user.getAuthorities() == null) {
-            user.setAuthorities(new HashSet<>());
-        }
+//        if (user.getAuthorities() == null) {
+//            user.setAuthorities(new HashSet<>());
+//        }
 
 //        User user = userEditMapper.create(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -41,4 +40,5 @@ public class UserService {
     public long count() {
         return userRepo.count();
     }
+
 }
