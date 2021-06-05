@@ -10,6 +10,6 @@ public class UserModel {
     private String username;
     private String fullName;
     private String token;
-    private Set<String> roles;
+    private String role;
     private Set<String> permissions;
 }

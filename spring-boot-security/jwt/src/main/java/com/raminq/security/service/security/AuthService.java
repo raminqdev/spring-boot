@@ -3,6 +3,7 @@ package com.raminq.security.service.security;
 import com.raminq.security.configuration.security.JwtTokenUtil;
 import com.raminq.security.domain.dto.LoginModel;
 import com.raminq.security.domain.dto.UserModel;
+import com.raminq.security.domain.entity.security.Permission;
 import com.raminq.security.domain.entity.security.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,9 +33,9 @@ public class AuthService {
         userModel.setUsername(user.getUsername());
         userModel.setFullName(user.getFullName());
         userModel.setToken(jwtTokenUtil.generateAccessToken(user));
-        userModel.setRoles(user.getRoles().stream().map(r -> r.getName()).collect(Collectors.toSet()));
-        userModel.setPermissions(user.getRoles().stream().flatMap(r ->
-                r.getPermissions().stream().map(p -> p.getName())).collect(Collectors.toSet()));
+        userModel.setRole(user.getRole().getName());
+        userModel.setPermissions(user.getRole().getPermissions().stream().map(Permission::getName)
+                .collect(Collectors.toSet()));
 
         return userModel;
     }

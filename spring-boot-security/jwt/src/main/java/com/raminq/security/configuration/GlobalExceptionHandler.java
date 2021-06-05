@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiCallError<String>> handleAccessDeniedException(HttpServletRequest request, AccessDeniedException ex) {
-        logger.error("handleAccessDeniedException {}\n", request.getRequestURI(), ex);
+        logger.error("handleAccessDeniedException {}\n", request.getRequestURI());
 
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)

@@ -10,9 +10,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static java.util.Optional.ofNullable;
 
 @Setter
 @Getter
@@ -39,23 +40,11 @@ public class User implements UserDetails {
     @UpdateTimestamp
     private LocalDateTime modifiedAt;
 
-    @Singular
-    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-    @JoinTable(name = "user_role",
-            joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
-            inverseJoinColumns = {@JoinColumn(name = "ROLE_ID", referencedColumnName = "ID")})
-    private Set<Role> roles = new HashSet<>();
-
     @Builder.Default
     private boolean enabled = true;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream()
-                .map(Role::getName)
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toSet());
-    }
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private Role role;
 
     @Override
     public boolean isAccountNonExpired() {
@@ -73,16 +62,11 @@ public class User implements UserDetails {
     }
 
     @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", fullName='" + fullName + '\'' +
-                ", createdAt=" + createdAt +
-                ", modifiedAt=" + modifiedAt +
-                ", roles=" + roles.stream().count() +
-                ", enabled=" + enabled +
-                '}';
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return ofNullable(role).map(Role::getPermissions)
+                .map(p -> p.stream().map(Permission::getName).map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toSet()))
+                .orElse(Set.of());
     }
+
 }
