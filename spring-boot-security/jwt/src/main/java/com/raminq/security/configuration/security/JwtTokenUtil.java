@@ -1,14 +1,12 @@
 package com.raminq.security.configuration.security;
 
-import com.raminq.security.domain.entity.security.Permission;
-import com.raminq.security.domain.entity.security.User;
+import com.raminq.security.domain.dto.UserModel;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -19,17 +17,16 @@ public class JwtTokenUtil {
     private final String jwtSecret = "9if322e9086a0394dawc0f5b176le6260a3721x6";
     private final Logger logger;
 
-    public String generateAccessToken(User user) {
+    public String generateAccessToken(UserModel userModel) {
         return Jwts.builder()
-                .setSubject(format("%s,%s", user.getId(), user.getUsername()))
+                .setSubject(format("%s,%s", userModel.getId(), userModel.getUsername()))
                 .setIssuer("ramin_q")
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)) // 1 week
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
-                .claim("fullName", user.getFullName())
-                .claim("role", user.getRole().getName())
-                .claim("permissions", user.getRole().getPermissions().stream().map(Permission::getName)
-                        .collect(Collectors.toSet()))
+                .claim("fullName", userModel.getFullName())
+                .claim("role", userModel.getRole())
+                .claim("permissions", userModel.getPermissions())
                 .compact();
     }
 

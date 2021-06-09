@@ -17,7 +17,7 @@ public class RegisterModel {
     private String password;
     @NotBlank
     private String rePassword;
-
-    private String roleName;
+    @NotBlank
+    private String role;
 
 }
