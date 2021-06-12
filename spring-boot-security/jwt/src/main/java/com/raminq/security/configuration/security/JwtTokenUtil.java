@@ -24,10 +24,19 @@ public class JwtTokenUtil {
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)) // 1 week
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
-                .claim("fullName", userModel.getFullName())
-                .claim("role", userModel.getRole())
-                .claim("permissions", userModel.getPermissions())
+//                .claim("fullName", userModel.getFullName())
+//                .claim("role", userModel.getRole())
+//                .claim("permissions", userModel.getPermissions())
                 .compact();
+    }
+
+    public String getUsername(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(jwtSecret)
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.getSubject().split(",")[1];
     }
 
     public Claims validateAndParseToken(String token) {

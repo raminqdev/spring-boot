@@ -1,6 +1,5 @@
 package com.raminq.security.configuration.security;
 
-import com.raminq.security.repository.security.UserRepo;
 import org.slf4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
@@ -22,8 +20,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import javax.servlet.http.HttpServletResponse;
-
-import static java.lang.String.format;
 
 /*
 https://www.toptal.com/spring/spring-security-tutorial
@@ -39,24 +35,20 @@ https://www.toptal.com/spring/spring-security-tutorial
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final Logger logger;
-    private final UserRepo userRepo;
     private final JwtTokenFilter jwtTokenFilter;
+    private final UserDetailsService userDetailsService;
 
-    public SecurityConfig(UserRepo userRepo, Logger logger, JwtTokenFilter jwtTokenFilter) {
+    public SecurityConfig(UserDetailsService userDetailsService, Logger logger, JwtTokenFilter jwtTokenFilter) {
         super();
         this.logger = logger;
-        this.userRepo = userRepo;
         this.jwtTokenFilter = jwtTokenFilter;
+        this.userDetailsService = userDetailsService;
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(username -> userRepo
-                .findByUsername(username)
-                .orElseThrow(
-                        () -> new UsernameNotFoundException(format("User: %s, not found", username))
-                ));
+        auth.userDetailsService(userDetailsService::loadByUsername);
     }
 
     @Override

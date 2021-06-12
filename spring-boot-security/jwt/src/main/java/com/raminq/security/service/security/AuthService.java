@@ -19,7 +19,6 @@ public class AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtil jwtTokenUtil;
-    private final UserService userService;
     private final UserMapper userMapper;
 
     public ResponseEntity<UserModel> login(LoginModel loginModel) {

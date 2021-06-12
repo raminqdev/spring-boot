@@ -1,7 +1,7 @@
 package com.raminq.security.configuration;
 
 
-import com.raminq.security.domain.dto.enums.Permissions;
+import com.raminq.security.domain.dto.enums.PermissionLevel;
 import com.raminq.security.domain.dto.enums.Roles;
 import com.raminq.security.domain.entity.security.Permission;
 import com.raminq.security.domain.entity.security.Role;
@@ -41,17 +41,6 @@ public class DatabaseInitializer implements ApplicationListener<ApplicationReady
             "Jack Willis",
             "Alan Turing"
     );
-    private final List<String> roles = of(
-            Roles.Admin.toString(),
-            Roles.Manager.toString(),
-            Roles.User.toString()
-    );
-    private final List<String> permissions = of(
-            Permissions.Read.toString(),
-            Permissions.Write.toString(),
-            Permissions.Update.toString(),
-            Permissions.Delete.toString()
-    );
     private final String password = "123";
 
 
@@ -59,17 +48,18 @@ public class DatabaseInitializer implements ApplicationListener<ApplicationReady
     @Transactional
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
 
-        //userRepo.deleteAll();
-        //userRepo.deleteAll();
-        //userRepo.deleteAll();
+//        userRepo.deleteAll();
+//        roleRepo.deleteAll();
+//        permissionRepo.deleteAll();
 
         List<Permission> permissionList = new ArrayList<>();
         if (permissionRepo.count() == 0) {
             permissionList = of(
-                    Permission.builder().name(Permissions.Read.toString()).build(),
-                    Permission.builder().name(Permissions.Write.toString()).build(),
-                    Permission.builder().name(Permissions.Update.toString()).build(),
-                    Permission.builder().name(Permissions.Delete.toString()).build()
+                    Permission.builder().name(PermissionLevel.PANEL_ADMIN.toString()).build(),
+                    Permission.builder().name(PermissionLevel.READ.toString()).build(),
+                    Permission.builder().name(PermissionLevel.WRITE.toString()).build(),
+                    Permission.builder().name(PermissionLevel.UPDATE.toString()).build(),
+                    Permission.builder().name(PermissionLevel.DELETE.toString()).build()
             );
 
             permissionList = permissionRepo.saveAllAndFlush(permissionList);
@@ -86,14 +76,14 @@ public class DatabaseInitializer implements ApplicationListener<ApplicationReady
                     Role.builder()
                             .name(Roles.Manager.toString())
                             .permissions(permissionList.stream()
-                                    .filter(a -> a.getName() == "Write")
+                                    .filter(a -> a.getName().equals("WRITE") || a.getName().equals("READ"))
                                     .collect(Collectors.toList()))
                             .build(),
 
                     Role.builder()
                             .name(Roles.User.toString())
                             .permissions(permissionList.stream()
-                                    .filter(a -> a.getName() == "Read")
+                                    .filter(a -> a.getName().equals("READ"))
                                     .collect(Collectors.toList()))
                             .build()
             );
@@ -114,6 +104,17 @@ public class DatabaseInitializer implements ApplicationListener<ApplicationReady
                 userRepo.save(user);
             }
         }
+
+
+//        for (int i = 0; i < 1000; ++i) {
+//            User user = User.builder()
+//                    .username("user" + i)
+//                    .password(passwordEncoder.encode(password + i))
+//                    .fullName("ramin " + i)
+//                    .build();
+//
+//            userRepo.save(user);
+//        }
 
 //        Optional<User> byId = userRepo.findById(18L);
 //        System.out.println("-------- --->  " + byId.get());

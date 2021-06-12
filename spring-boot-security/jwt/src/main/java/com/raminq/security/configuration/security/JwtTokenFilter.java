@@ -1,9 +1,6 @@
 package com.raminq.security.configuration.security;
 
-import com.raminq.security.domain.entity.security.Permission;
-import com.raminq.security.domain.entity.security.Role;
 import com.raminq.security.domain.entity.security.User;
-import com.raminq.security.repository.security.UserRepo;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -19,9 +16,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.List.of;
 import static java.util.Optional.ofNullable;
@@ -32,11 +26,10 @@ import static org.springframework.util.StringUtils.hasText;
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final JwtTokenUtil jwtTokenUtil;
-    private final UserRepo userRepo;
+    private final UserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
 
         final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
@@ -52,16 +45,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             return;
         }
 
-        final User user = User.builder()
-                .id(Long.valueOf(claims.getSubject().split(",")[0]))
-                .username(claims.getSubject().split(",")[1])
-                .fullName(String.valueOf(claims.get("fullName")))
-                .role(Role.builder()
-                        .name(String.valueOf(claims.get("role")))
-                        .permissions((Set<Permission>) claims.get("permissions", ArrayList.class).stream()
-                                        .map(pName -> Permission.builder().name(String.valueOf(pName)).build()).collect(Collectors.toSet())
-                        ).build())
-                .build();
+        final User user = userDetailsService.loadByUsername(jwtTokenUtil.getUsername(token));
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 user, null,
