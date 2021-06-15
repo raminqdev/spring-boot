@@ -8,6 +8,11 @@ public class ErrorCodes {
     public static final int UN_AUTHORIZED = 1002;
     public static final int USER_NOT_FOUND_IN_SECURITY_CONTEXT = 1003;
     public static final int USER_HAS_NO_PERMISSION_TO_VIEW_THIS_RESOURCE = 1004;
+    public static final int REFRESH_TOKEN_IS_NOT_IN_DATABASE = 1005;
+    public static final int REFRESH_TOKEN_WAS_EXPIRED = 1006;
+
+
+
 
     //User(Prefix = 201)
     public static final int USER_NOT_FOUND_BY_ID = 2011;

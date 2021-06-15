@@ -8,6 +8,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Set;
@@ -21,18 +24,27 @@ import static java.util.Optional.ofNullable;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "`user`")
+@Table(name = "`user`",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "username"),
+                @UniqueConstraint(columnNames = "email")
+        })
 public class User implements UserDetails {
 
     @Id
     @SequenceGenerator(name = "myKeySeq", allocationSize = 50)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "myKeySeq")
-
 //    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(unique = true)
+    @NotBlank
+    @Size(max = 30)
     private String username;
+
+    @NotBlank
+    @Size(max = 60)
+    @Email
+    private String email;
     private String password;
     private String fullName;
 

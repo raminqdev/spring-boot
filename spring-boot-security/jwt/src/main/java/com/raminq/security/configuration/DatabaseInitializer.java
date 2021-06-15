@@ -32,15 +32,12 @@ public class DatabaseInitializer implements ApplicationListener<ApplicationReady
     private final PasswordEncoder passwordEncoder;
 
     private final List<String> usernames = of(
-            "admin@gmail.com",
-            "manager@gmail.com",
-            "user@gmail.com"
+            "admin",
+            "manager",
+            "user"
     );
-    private final List<String> fullNames = of(
-            "Ada Lovelace",
-            "Jack Willis",
-            "Alan Turing"
-    );
+    private final List<String> emails = of("ada@gmail.com", "jack@gmail.com", "alan@gmail.com");
+    private final List<String> fullNames = of("Ada Lovelace","Jack Willis","Alan Turing");
     private final String password = "123";
 
 
@@ -98,6 +95,7 @@ public class DatabaseInitializer implements ApplicationListener<ApplicationReady
                         .username(usernames.get(i))
                         .password(passwordEncoder.encode(password))
                         .fullName(fullNames.get(i))
+                        .email(emails.get(i))
                         .role(roleList.get(i))
                         .build();
 

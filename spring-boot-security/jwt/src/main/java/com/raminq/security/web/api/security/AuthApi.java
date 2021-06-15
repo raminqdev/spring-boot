@@ -1,9 +1,9 @@
 package com.raminq.security.web.api.security;
 
 
-import com.raminq.security.domain.dto.LoginModel;
-import com.raminq.security.domain.dto.UserModel;
+import com.raminq.security.domain.dto.*;
 import com.raminq.security.service.security.AuthService;
+import com.raminq.security.service.security.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,11 +20,21 @@ import javax.validation.Valid;
 public class AuthApi {
 
     private final AuthService authService;
+    private final RefreshTokenService refreshTokenService;
 
     @PostMapping("login")
-    public ResponseEntity<UserModel> login(@RequestBody @Valid LoginModel model) {
+    public UserModel login(@RequestBody @Valid LoginModel model) {
         return authService.login(model);
     }
 
+    @PostMapping("/refresh-token")
+    public RefreshTokenResponse refreshToken(@Valid @RequestBody RefreshTokenRequest model) {
+        return refreshTokenService.createToken(model.getRefreshToken());
+    }
 
+    @PostMapping("/logout")
+    public ResponseEntity<String> logoutUser(@Valid @RequestBody LogOutRequest request) {
+        refreshTokenService.deleteByUserId(request.getUserId());
+        return ResponseEntity.ok("Log out successful!");
+    }
 }

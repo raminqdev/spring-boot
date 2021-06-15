@@ -8,7 +8,6 @@ import javax.validation.constraints.NotNull;
 @Data
 public class LoginModel {
     @NotNull
-    @Email
     private String username;
     @NotNull
     private String password;

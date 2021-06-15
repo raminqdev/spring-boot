@@ -6,6 +6,8 @@ import java.util.Set;
 
 @Data
 public class UserModel {
+    private String token;
+    private String refreshToken;
     private Long id;
     private String username;
     private String fullName;
