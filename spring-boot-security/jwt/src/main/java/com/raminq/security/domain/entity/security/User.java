@@ -58,6 +58,9 @@ public class User implements UserDetails {
     @Builder.Default
     private boolean enabled = true;
 
+    @Size(max = 8)
+    private String forgotPasswordToken;
+
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Role role;
 
@@ -79,7 +82,9 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return ofNullable(role).map(Role::getPermissions)
-                .map(p -> p.stream().map(Permission::getName).map(SimpleGrantedAuthority::new)
+                .map(p -> p.stream()
+                        .map(Permission::getName)
+                        .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toSet()))
                 .orElse(Set.of());
     }

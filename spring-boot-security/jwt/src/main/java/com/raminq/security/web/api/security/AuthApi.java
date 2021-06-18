@@ -37,4 +37,19 @@ public class AuthApi {
         refreshTokenService.deleteByUserId(request.getUserId());
         return ResponseEntity.ok("Log out successful!");
     }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> generateForgotPasswordToken(@Valid @RequestBody ForgotPasswordRequest request) {
+        return ResponseEntity.ok(authService.generateForgotPasswordToken(request));
+    }
+
+    @PostMapping("/confirm-forgot-password")
+    public ResponseEntity<String> confirmForgotPasswordToken(@Valid @RequestBody ForgotPasswordRequest request) {
+        return ResponseEntity.ok(authService.confirmForgotPasswordToken(request));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        return ResponseEntity.ok(authService.resetPassword(request));
+    }
 }
