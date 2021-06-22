@@ -34,10 +34,10 @@ public interface UserRepo extends JpaRepository<User, Long> {
 
 
     @Query("SELECT u FROM User u WHERE " +
-            "(:id is null or u.id = :id) and " +
-            "(:username is null or u.username like %:username%) and " +
-            "(:fullName is null or u.fullName like %:username%) and" +
-            "(:enabled is null or u.enabled = :enabled)")
+            "(:id IS NULL OR u.id = :id) AND " +
+            "(:username IS NULL OR u.username LIKE %:username%) AND " +
+            "(:fullName IS NULL OR u.fullName LIKE %:username%) AND" +
+            "(:enabled IS NULL OR u.enabled = :enabled)")
     Page<User> search(@Param("id") Long id, @Param("username") String username,
                       @Param("fullName") String fullName, @Param("enabled") Boolean enabled,
                       Pageable pageable);

@@ -15,7 +15,10 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +33,10 @@ public class DatabaseInitializer implements ApplicationListener<ApplicationReady
     private final RoleRepo roleRepo;
     private final PermissionRepo permissionRepo;
     private final PasswordEncoder passwordEncoder;
+    @PersistenceContext
+    private final EntityManager entityManager;
+
+
 
     private final List<String> usernames = of(
             "admin",
@@ -45,6 +52,7 @@ public class DatabaseInitializer implements ApplicationListener<ApplicationReady
     @Transactional
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
 
+
 //        userRepo.deleteAll();
 //        roleRepo.deleteAll();
 //        permissionRepo.deleteAll();
@@ -59,7 +67,7 @@ public class DatabaseInitializer implements ApplicationListener<ApplicationReady
                     Permission.builder().name(PermissionLevel.DELETE.toString()).build()
             );
 
-            permissionList = permissionRepo.saveAllAndFlush(permissionList);
+           // permissionList = permissionRepo.saveAllAndFlush(permissionList);
         }
 
         List<Role> roleList = new ArrayList<>();
@@ -85,7 +93,7 @@ public class DatabaseInitializer implements ApplicationListener<ApplicationReady
                             .build()
             );
 
-            roleList = roleRepo.saveAllAndFlush(roleList);
+           // roleList = roleRepo.saveAllAndFlush(roleList);
         }
 
 
@@ -118,6 +126,14 @@ public class DatabaseInitializer implements ApplicationListener<ApplicationReady
 //        System.out.println("-------- --->  " + byId.get());
 //        Optional<Permission> byId1 = permissionRepo.findById(11L);
 //        User u = User.builder().build();
+
+//        User user = User.builder()
+//                .username("ramin")
+//                .password(passwordEncoder.encode(password))
+//                .fullName("ramin g")
+//                .email("r@gmail.com")
+//                .build();
+//        userRepo.save(user);
 
     }
 

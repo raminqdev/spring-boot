@@ -8,10 +8,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,31 +35,29 @@ public class User implements UserDetails {
 //    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotBlank
-    @Size(max = 30)
+    @Column(nullable = false, length = 30)
     private String username;
 
-    @NotBlank
-    @Size(max = 60)
-    @Email
+    @Column(nullable = false, length = 60)
     private String email;
     private String password;
     private String fullName;
 
     @CreationTimestamp
     @Column(updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @UpdateTimestamp
-    private LocalDateTime modifiedAt;
+    private Instant modifiedAt;
 
     @Builder.Default
     private boolean enabled = true;
 
-    @Size(max = 8)
+    @Column(length = 8)
     private String forgotPasswordToken;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "ROLE_ID", nullable = false)
     private Role role;
 
     @Override
@@ -88,5 +84,6 @@ public class User implements UserDetails {
                         .collect(Collectors.toSet()))
                 .orElse(Set.of());
     }
+
 
 }
