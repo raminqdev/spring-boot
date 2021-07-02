@@ -4,6 +4,7 @@ package com.raminq.security.web.api.security;
 import com.raminq.security.domain.dto.*;
 import com.raminq.security.service.security.AuthService;
 import com.raminq.security.service.security.RefreshTokenService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-
+@Tag(name = "User")
 @RestController
 @RequestMapping(path = "api/public")
 @RequiredArgsConstructor

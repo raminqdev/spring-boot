@@ -1,6 +1,7 @@
 package com.raminq.security.configuration.security;
 
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +22,8 @@ import org.springframework.web.filter.CorsFilter;
 
 import javax.servlet.http.HttpServletResponse;
 
+import static java.lang.String.format;
+
 /*
 https://www.toptal.com/spring/spring-security-tutorial
  */
@@ -37,6 +40,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final Logger logger;
     private final JwtTokenFilter jwtTokenFilter;
     private final UserDetailsService userDetailsService;
+
+    @Value("${springdoc.api-docs.path}")
+    private String restApiDocPath;
+    @Value("${springdoc.swagger-ui.path}")
+    private String swaggerPath;
 
     public SecurityConfig(UserDetailsService userDetailsService, Logger logger, JwtTokenFilter jwtTokenFilter) {
         super();
@@ -71,6 +79,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and();
 
         http.authorizeRequests()
+                // Swagger endpoints must be publicly accessible
+                .mvcMatchers("/").permitAll()
+                .mvcMatchers(format("%s/**", restApiDocPath)).permitAll()
+                .mvcMatchers(format("%s/**", swaggerPath)).permitAll()
+                .antMatchers( "/favicon.ico").permitAll()
                 .mvcMatchers("/api/public/**").permitAll()
                 .anyRequest().authenticated();
 

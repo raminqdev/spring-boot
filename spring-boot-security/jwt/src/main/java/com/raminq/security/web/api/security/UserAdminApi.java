@@ -2,7 +2,6 @@ package com.raminq.security.web.api.security;
 
 import com.raminq.security.configuration.aspect.PermissionAuthorize;
 import com.raminq.security.domain.dto.*;
-import com.raminq.security.domain.dto.enums.PermissionLevel;
 import com.raminq.security.service.security.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@Tag(name = "UserAdmin")
 @RestController
 @RequestMapping(path = "api/admin/user")
 //@RolesAllowed(Role.USER_ADMIN)
