@@ -1,7 +1,7 @@
 package com.raminq.security.configuration;
 
 import com.raminq.security.configuration.interceptor.RequestProcessingTimeInterceptor;
-import com.raminq.security.configuration.properties.Properties;
+import com.raminq.security.service.common.PropertiesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -31,9 +31,9 @@ public class MvcConfig implements WebMvcConfigurer {
 
 
     @Bean
-    public Properties properties(@Value("${jwt.Secret}") String secret,
-                                 @Value("${jwt.ExpirationMs}") String expirationMs,
-                                 @Value("${jwt.RefreshExpirationMs}") String refreshExpirationMs) {
-        return new Properties(secret, Long.valueOf(expirationMs), Long.valueOf(refreshExpirationMs));
+    public PropertiesService properties(@Value("${jwt.Secret}") String secret,
+                                        @Value("${jwt.ExpirationMs}") String expirationMs,
+                                        @Value("${jwt.RefreshExpirationMs}") String refreshExpirationMs) {
+        return new PropertiesService(secret, Long.valueOf(expirationMs), Long.valueOf(refreshExpirationMs));
     }
 }

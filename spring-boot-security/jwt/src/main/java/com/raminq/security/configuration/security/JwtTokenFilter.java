@@ -39,7 +39,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         }
 
         final String token = header.split(" ")[1].trim();
-        final Claims claims = jwtTokenUtil.validateAndParseToken(token);
+        final Claims claims = jwtTokenUtil.validateAndParseAccessToken(token);
         if (claims == null) {
             chain.doFilter(request, response);
             return;

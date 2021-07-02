@@ -38,8 +38,8 @@ public class AuthService {
         User user = (User) authenticate.getPrincipal();
 
         UserModel userModel = userMapper.toUserModel(user);
-        userModel.setToken(jwtTokenUtil.generateAccessToken(user));
-        userModel.setRefreshToken(refreshTokenService.createRefreshToken(user));
+        userModel.setAccessToken(jwtTokenUtil.generateAccessToken(user));
+        userModel.setRefreshToken(refreshTokenService.generateRefreshToken(user));
 
         return userModel;
     }

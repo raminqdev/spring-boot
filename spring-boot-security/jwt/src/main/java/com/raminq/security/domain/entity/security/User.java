@@ -23,10 +23,9 @@ import static java.util.Optional.ofNullable;
 @Builder
 @Entity
 @Table(name = "`user`",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "username"),
-                @UniqueConstraint(columnNames = "email")
-        })
+        uniqueConstraints = @UniqueConstraint(name = "UNQ_USERNAME_EMAIL", columnNames = {"USERNAME", "EMAIL"}),
+        indexes = @Index(name = "IDX_USERNAME_EMAIL", columnList = "USERNAME, EMAIL")
+)
 public class User implements UserDetails {
 
     @Id

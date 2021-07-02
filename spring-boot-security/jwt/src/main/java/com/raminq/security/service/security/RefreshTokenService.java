@@ -1,6 +1,6 @@
 package com.raminq.security.service.security;
 
-import com.raminq.security.configuration.properties.Properties;
+import com.raminq.security.service.common.PropertiesService;
 import com.raminq.security.configuration.security.JwtTokenUtil;
 import com.raminq.security.domain.dto.RefreshTokenResponse;
 import com.raminq.security.domain.entity.security.RefreshToken;
@@ -23,16 +23,17 @@ import static com.raminq.security.domain.dto.ErrorCodes.REFRESH_TOKEN_WAS_EXPIRE
 public class RefreshTokenService {
 
     private final UserRepo userRepo;
-    private final Properties properties;
     private final JwtTokenUtil jwtTokenUtil;
     private final RefreshTokenRepo refreshTokenRepo;
+    private final PropertiesService propertiesService;
+
 
     @Transactional
-    public String createRefreshToken(User user) {
+    public String generateRefreshToken(User user) {
         RefreshToken refreshToken = new RefreshToken();
 
         refreshToken.setUser(user);
-        refreshToken.setExpiryDate(Instant.now().plusMillis(properties.getJwtRefreshExpirationMs()));
+        refreshToken.setExpiryDate(Instant.now().plusMillis(propertiesService.getJwtRefreshExpirationMs()));
         refreshToken.setToken(UUID.randomUUID().toString());
 
         refreshToken = refreshTokenRepo.save(refreshToken);
@@ -40,7 +41,7 @@ public class RefreshTokenService {
     }
 
     @Transactional
-    public RefreshTokenResponse createToken(String refreshToken) {
+    public RefreshTokenResponse generateNewRefreshToken(String refreshToken) {
         return refreshTokenRepo.findByToken(refreshToken)
                 .map(this::verifyExpiration)
                 .map(RefreshToken::getUser)

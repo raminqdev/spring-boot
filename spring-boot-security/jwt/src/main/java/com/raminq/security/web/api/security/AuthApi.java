@@ -29,7 +29,7 @@ public class AuthApi {
 
     @PostMapping("/refresh-token")
     public RefreshTokenResponse refreshToken(@Valid @RequestBody RefreshTokenRequest model) {
-        return refreshTokenService.createToken(model.getRefreshToken());
+        return refreshTokenService.generateNewRefreshToken(model.getRefreshToken());
     }
 
     @PostMapping("/logout")
